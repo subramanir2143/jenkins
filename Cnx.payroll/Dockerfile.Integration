@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/dotnet/core/sdk
+
+WORKDIR /home/app
+
+COPY ./Cnx.payroll/src/Services/EarningsAndDeductions ./
+
+WORKDIR /home/app/Cnx.EarningsAndDeductions.FunctionalTests/
+
+ENTRYPOINT ["dotnet", "test", "--verbosity=normal"]

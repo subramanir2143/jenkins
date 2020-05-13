@@ -1,0 +1,64 @@
+version: '3.4'
+
+services:
+
+  rabbit:
+    ports:
+      - "5673:5672"
+      - "15678:15672"
+
+  nosql.data:
+    ports:
+      - "27016:27017"
+
+  mongo1:    
+    ports:
+      - "27017:27017"
+
+  mongo2:
+    ports:
+      - "27018:27017"
+   
+  mongo3:
+    ports:
+      - "27019:27017"
+
+  mysql.data:
+    environment:
+      MYSQL_DATABASE: EarningsAndDeductions
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_USER: EarningsAndDeductions
+      MYSQL_PASSWORD: P@ssw0rd
+    ports:
+      - "3306:3306"
+
+  cnx.earningsanddeductions.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - EventBusConnection=${ED_RABBITMQ_HOST:-rabbit}
+      - EventBusUserName=${ED_RABBITMQ_UN:-guest}
+      - EventBusPassword=${ED_RABBITMQ_PWD:-guest}
+      - MongoConnectionString=${ED_MONGO_CS:-mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0}
+      - MongoDatabase=${ED_MONGO_DB:-EDEventStore}
+      - FilePath=${ED_FilePath:- /app}
+      - MySQLConnectionString=${PAYROLL_READ_CS:-Server=mysql.data;database=EarningsAndDeductions;user=root;password=P@ssw0rd}
+    ports:
+      - "59846:80" 
+
+  cnx.apigateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - PayrollAPIUrlHC=http://cnx.payroll.api/hc
+      - ReadAPIUrlHC=http://cnx.readmodel.api/hc
+      - IdentityUrl=http://cnx.identity.api
+    ports:
+      - "59840:80"
+
+  cnx.identity.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "59845:80"   

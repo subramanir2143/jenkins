@@ -1,0 +1,56 @@
+version: '3.4'
+
+services:
+  nosql.data:
+    image: mongo
+
+  mongo1:
+    image: mongo
+    hostname: mongo1
+    container_name: mongo1.payroll
+    command: "--replSet rs0"
+
+  mongo2:
+    image: mongo
+    hostname: mongo2
+    container_name: mongo2.payroll
+    command: "--replSet rs0"
+  
+  mongo3:
+    image: mongo
+    hostname: mongo3
+    container_name: mongo3.payroll
+    command: "--replSet rs0"
+
+  mysql.data: 
+    image: mysql:latest
+
+  rabbit:
+    image: rabbitmq:management
+    container_name: rabbit
+
+  cnx.earningsanddeductions.api:
+    image: ${REGISTRY:-cnx}/cnx.earningsanddeductions.api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.API/Dockerfile 
+    depends_on:
+       - nosql.data
+       - mysql.data
+
+  cnx.identity.api:
+    image: ${REGISTRY:-cnx}/cnx.identity.api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/Services/Identity/Cnx.Identity.API/Dockerfile
+
+  cnx.apigateway:
+    image: ${REGISTRY:-cnx}/cnx.apigateway:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/ApiGateways/Cnx.Payroll.ApiGateway/Dockerfile
+    depends_on:
+      - cnx.identity.api
+      - nosql.data
+      - mysql.data
+      - rabbit

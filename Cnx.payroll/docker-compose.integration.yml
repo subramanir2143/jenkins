@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  nosql.data:
+    image: mongo    
+
+  mysql.data: 
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: EarningsAndDeductions
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_USER: EarningsAndDeductions
+      MYSQL_PASSWORD: P@ssw0rd
+    ports:
+      - "3306:3306"
+
+  cnxearninganddeductions:
+    depends_on:
+      - nosql.data
+      - mysql.data
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoConnectionString=${ED_MONGO_CS:-mongodb://nosql.data}
+      - MongoDatabase=${ED_MONGO_DB:-EDEventStore}
+      - MySQLConnectionString=${PAYROLL_READ_CS:-Server=mysql.data;Port=3306;Database=EarningsAndDeductions;Uid=root;Pwd=P@ssw0rd}
+    image: "cnxearninganddeductions:B${BUILD_NUMBER}"
+    build:
+      context: .
+
+  cnxearninganddeductionsintegration:
+    depends_on:
+      - cnxearninganddeductions
+    image: "cnxearninganddeductions:test-B${BUILD_NUMBER}"
+    build:
+      context: .
+      dockerfile: Dockerfile.Integration
