@@ -5,9 +5,6 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 WORKDIR /src
 
-COPY scripts scripts/
-
-COPY src/ApiGateways/*/*.csproj /src/csproj-files/
 COPY src/Services/*/*/*.csproj /src/csproj-files/
 
 ARG RUN=pwd
