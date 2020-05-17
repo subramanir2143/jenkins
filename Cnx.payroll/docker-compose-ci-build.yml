@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+
+  cnx.earningsanddeductions.api:
+    image: my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}
+    build:
+      context: .
+      dockerfile: src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.API/Dockerfile
