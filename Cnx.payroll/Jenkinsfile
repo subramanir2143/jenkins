@@ -6,9 +6,9 @@ node('docker') {
     stage 'Build & UnitTest'
     //sh "docker build -t cnxearninganddeductions:B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile ."
     // sh "docker build -t my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile ."
-	def cd = pwd()
-	echo cd
-	// sh "docker-compose -f Cnx.Payroll/docker-compose-ci-build.yml build"
+	//def cd = pwd()
+	//echo cd
+	// sh "docker-compose -f docker-compose-ci-build.yml build"
     //sh "docker build -t cnxearninganddeductions:test-B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile.Integration ."
     
     stage 'Publish UT Reports'
