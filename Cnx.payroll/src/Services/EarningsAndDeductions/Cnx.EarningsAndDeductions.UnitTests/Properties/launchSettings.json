@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Cnx.EarningsAndDeductions.UnitTests": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

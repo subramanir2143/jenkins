@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+
+  cnx.earningsanddeductions.unittest.api:
+    image: cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}
+    build:
+      context: .
+      dockerfile: src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.UnitTests/Dockerfile

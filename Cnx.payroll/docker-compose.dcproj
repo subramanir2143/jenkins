@@ -9,7 +9,9 @@
     <DockerServiceName>cnx.earningsanddeductions.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="docker-compose-ci-build.yml" />
     <None Include="docker-compose-registry.yml" />
+    <None Include="docker-compose-unit-tests.yml" />
     <None Include="docker-compose.ci.yml" />
     <None Include="docker-compose.integration.yml" />
     <None Include="docker-compose.override.yml">

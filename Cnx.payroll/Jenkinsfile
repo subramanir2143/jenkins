@@ -5,23 +5,24 @@ node('docker') {
 
     stage 'Build & UnitTest'
     //sh "docker build -t cnxearninganddeductions:B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile ."
-    sh "docker build -t my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER} -f Cnx.payroll/src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.API/Dockerfile ."
+    //sh "docker build -t my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER} -f //Cnx.payroll/src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.API/Dockerfile ."
 	def cd = "${env.WORKSPACE}"
 	echo cd
-	//sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
+	sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
+	sh "docker-compose -f Cnx.payroll/docker-compose-unit-test.yml build"
     //sh "docker build -t cnxearninganddeductions:test-B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile.Integration ."
     
-    //stage 'Publish UT Reports'
+    stage 'Publish UT Reports'
         
-    //    containerID = sh (
-    //        script: "docker run -d cnxearninganddeductions:B${BUILD_NUMBER}", 
-    //    returnStdout: true
-    //    ).trim()
-    //    echo "Container ID is ==> ${containerID}"
-    //    sh "docker cp ${containerID}:/TestResults/test_results.xml test_results.xml"
-    //    sh "docker stop ${containerID}"
-    //    sh "docker rm ${containerID}"
-    //    step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'test_results.xml'])    
+        containerID = sh (
+            script: "docker run -d cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}", 
+        returnStdout: true
+        ).trim()
+        echo "Container ID is ==> ${containerID}"
+        sh "docker cp ${containerID}:/TestResults/test_results.xml test_results.xml"
+        sh "docker stop ${containerID}"
+        sh "docker rm ${containerID}"
+        step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'test_results.xml'])    
       
     //stage 'Integration Test'
          // sh "docker-compose -f docker-compose.integration.yml up"
