@@ -77,8 +77,12 @@ node('docker') {
 		echo docker_image
 		stages[docker_image] = get_stages(docker_image)
 	}
+
+	node('docker') {
+		parallel stages
+	}
 	
-	parallel stages
+	
 	
 	node('docker') {
 		stage("Push Image") {
