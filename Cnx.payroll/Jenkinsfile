@@ -1,5 +1,5 @@
-def docker_images = ["my-registry:5000/cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}",
-"my-registry:5000/cnxnotification_unit_tests:B${BUILD_NUMBER}"]
+def docker_images = ["my-registry:5000/cnx.earninganddeductions.unittest:B${BUILD_NUMBER}",
+"my-registry:5000/cnx.notification.unittest:B${BUILD_NUMBER}"]
 
 def get_stages(docker_image) {
 	stages = {
@@ -83,10 +83,9 @@ node('docker') {
 		parallel stages
 	}
 	
-	
-	
 	node('docker') {
 		stage("Push Image") {
-			sh "docker push my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}"
+			sh "docker push my-registry:5000/cnx.earninganddeductions.api:B${BUILD_NUMBER}"
+			sh "docker push my-registry:5000/cnx.notification.api:B${BUILD_NUMBER}"
 		}
 	}
