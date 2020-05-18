@@ -3,13 +3,13 @@ version: '3.4'
 services:
 
   cnx.earningsanddeductions.api:
-    image: my-registry:5000/cnx.earninganddeductions.api:B${BUILD_NUMBER}
+    image: cnx.earninganddeductions.api:B${BUILD_NUMBER}
     build:
       context: .
       dockerfile: src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.API/Dockerfile
 
   cnx.notification.api:
-    image: my-registry:5000/cnx.notification.api:B${BUILD_NUMBER}
+    image: cnx.notification.api:B${BUILD_NUMBER}
     build:
       context: .
       dockerfile: src/Services/Notification/Cnx.Notification.API/Dockerfile

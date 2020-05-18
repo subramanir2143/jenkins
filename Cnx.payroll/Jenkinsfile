@@ -1,10 +1,9 @@
-def docker_images = ["my-registry:5000/cnx.earninganddeductions.unittest:B${BUILD_NUMBER}",
-"my-registry:5000/cnx.notification.unittest:B${BUILD_NUMBER}"]
+def docker_images = ["cnx.earninganddeductions.unittest:B${BUILD_NUMBER}", "cnx.notification.unittest:B${BUILD_NUMBER}"]
 
 def get_stages(docker_image) {
 	stages = {
 				stage("Print image name") {
-						echo 'Running in ${docker_image}'
+						echo "Running in ${docker_image}"
 				}
 
 				node('docker'){
@@ -28,8 +27,6 @@ def get_stages(docker_image) {
 						}
 					}
 				}
-
-				
 	}
 
 	return stages
@@ -42,38 +39,28 @@ node('docker') {
 	}       
 
     stage ('Build & UnitTest') {
-		def cd = "${env.WORKSPACE}"
-		echo cd
-		date = new Date()
-		println date.format("ddMMyyyy")
-
-		//sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
-		//sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build"
-		//sh "docker build -t cnxearninganddeductions:test-B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile.Integration ."
-	}	
+		sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
+		sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build"
+	}
     
-    //stage 'Publish UT Reports'
-        
-    //    containerID = sh (
-    //        script: "docker run -d cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}", 
-    //    returnStdout: true
-    //    ).trim()
-    //    echo "Container ID is ==> ${containerID}"
-    //    sh "docker cp ${containerID}:/TestResults/ TestResults"
-    //    sh "docker stop ${containerID}"
-    //    sh "docker rm ${containerID}"
-    //   step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'TestResults/test_results*.xml'])    
-      
-    //stage 'Integration Test'
-         // sh "docker-compose -f docker-compose.integration.yml up"
-    //     sh "docker-compose -f Cnx.payroll/docker-compose.integration.yml up --force-recreate --abort-on-container-exit"
-    //     sh "docker-compose -f Cnx.payroll/docker-compose.integration.yml down -v"
+}
+	def stages = [:]
 
-    
+	for (int i = 0; i < docker_images.size(); i++) {
+		def docker_image = docker_images[i]
+		echo "Currently executing docker image"
+		echo docker_image
+		stages[docker_image] = get_stages(docker_image)
+	}
 
-	// stage("Deploy to k8s")
-    //     sh "sed -i 's/BUILD_NUMBER/B${BUILD_NUMBER}/g' mydeploy.yaml"
-	// 	sh "kubectl apply -f mydeploy.yaml"
-	// 	sh "kubectl apply -f myservice.yaml"
-    
+	parallel stages
+	
+node('docker') {
+	stage("Push Image") {
+		def formattedDate = new Date().format("ddMMyyyy")
+		sh "docker tag cnx.earninganddeductions.api:B${BUILD_NUMBER} my-registry:5000/cnx.earninganddeductions.api.${formattedDate}.${BUILD_NUMBER}"
+		sh "docker push my-registry:5000/cnx.earninganddeductions.api.${formattedDate}.${BUILD_NUMBER}"
+		sh "docker tag cnx.notification.api:B${BUILD_NUMBER} my-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
+		sh "docker push my-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
+	}
 }
