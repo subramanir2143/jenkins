@@ -8,13 +8,13 @@ def get_stages(docker_image) {
 
 				stage("Publish UT Report") {
 					containerID = sh (
-						script: "docker run -d ${docker_image}", returnStdout: true
+						script: "docker run -d cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}", returnStdout: true
 					).trim()
 					echo "Container ID is ==> ${containerID}"
-					sh "docker cp ${containerID}:/TestResults/test_results.xml test_results.xml"
+					sh "docker cp ${containerID}:/TestResults/ TestResults"
 					sh "docker stop ${containerID}"
 					sh "docker rm ${containerID}"
-					step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'test_results.xml'])
+					step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'TestResults/test_results*.xml'])
 				}
 
 				stage("Integration Test") {
