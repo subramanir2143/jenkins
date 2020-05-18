@@ -3,13 +3,13 @@ version: '3.4'
 services:
 
   cnx.earningsanddeductions.unittest:
-    image: cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}
+    image: my-registry:5000/cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}
     build:
       context: .
       dockerfile: src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.UnitTests/Dockerfile
 
   cnx.notification.unittest:
-    image: cnxnotification_unit_tests:B${BUILD_NUMBER}
+    image: my-registry:5000/cnxnotification_unit_tests:B${BUILD_NUMBER}
     build:
       context: .
       dockerfile: src/Services/Notification/Cnx.Notification.API.UnitTests/Dockerfile
