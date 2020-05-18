@@ -14,7 +14,7 @@ def get_stages(docker_image) {
 					echo "Container ID is ==> ${containerID}"
 					sh "docker cp ${containerID}:/TestResults/ TestResults"
 					sh "docker stop ${containerID}"
-					sh "docker rm ${containerID}"
+					sh "docker rm ${containerID} || true"
 					step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'TestResults/test_results*.xml'])
 				}
 
