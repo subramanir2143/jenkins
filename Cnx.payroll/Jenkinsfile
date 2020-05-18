@@ -45,7 +45,7 @@ node('docker') {
 		def cd = "${env.WORKSPACE}"
 		echo cd
 		date = new Date()
-		println date.format("ddMMyyyy", TimeZone.getTimeZone('UTC'))
+		println date.format("ddMMyyyy")
 
 		//sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
 		//sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build"
