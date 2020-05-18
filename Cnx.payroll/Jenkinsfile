@@ -32,28 +32,33 @@ def get_stages(docker_image) {
 
 node('docker') {
 
-    stage 'Checkout'
-        checkout scm
+    stage ('Checkout') {
+		checkout scm
+	}       
 
-    stage 'Build & UnitTest'
-    //sh "docker build -t cnxearninganddeductions:B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile ."
-    //sh "docker build -t my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER} -f //Cnx.payroll/src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.API/Dockerfile ."
-	def cd = "${env.WORKSPACE}"
-	echo cd
-	sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
-	sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build"
-    //sh "docker build -t cnxearninganddeductions:test-B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile.Integration ."
+    stage ('Build & UnitTest') {
+		def cd = "${env.WORKSPACE}"
+		echo cd
+		sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
+		sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build"
+		//sh "docker build -t cnxearninganddeductions:test-B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile.Integration ."
+	}
+    
 	
-	def stages = [:]
+	stage ('Tests'){
+		def stages = [:]
 
-    for (int i = 0; i < docker_images.size(); i++) {
-        def docker_image = docker_images[i] + ${BUILD_NUMBER}
-		echo "Currently executing docker image"
-		echo docker_image
-        stages[docker_image] = get_stages(docker_image)
-    }
+		for (int i = 0; i < docker_images.size(); i++) {
+			def docker_image = docker_images[i] + ${BUILD_NUMBER}
+			echo "Currently executing docker image"
+			echo docker_image
+			stages[docker_image] = get_stages(docker_image)
+		}
 
-    parallel stages
+		parallel stages
+	}
+	
+	
     
     //stage 'Publish UT Reports'
         
@@ -72,8 +77,9 @@ node('docker') {
     //     sh "docker-compose -f Cnx.payroll/docker-compose.integration.yml up --force-recreate --abort-on-container-exit"
     //     sh "docker-compose -f Cnx.payroll/docker-compose.integration.yml down -v"
 
-    stage("Push Image")
+    stage("Push Image") {
         sh "docker push my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}"
+	}
 
 	// stage("Deploy to k8s")
     //     sh "sed -i 's/BUILD_NUMBER/B${BUILD_NUMBER}/g' mydeploy.yaml"
