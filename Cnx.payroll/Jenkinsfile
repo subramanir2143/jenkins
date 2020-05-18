@@ -44,9 +44,9 @@ node('docker') {
     stage ('Build & UnitTest') {
 		def cd = "${env.WORKSPACE}"
 		echo cd
-		def date = "${TAG_DATE}"
+		def date = "${env.TAG_DATE}"
 		echo date
-		def formatted_date = $"TAG_DATE.toString('ddMMyyyy')"
+		def formatted_date = $"{env.TAG_DATE.toString('ddMMyyyy')}"
 		echo formatted_date
 
 		//sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
