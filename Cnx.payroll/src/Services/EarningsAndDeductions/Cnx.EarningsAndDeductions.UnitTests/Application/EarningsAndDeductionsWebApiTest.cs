@@ -62,7 +62,7 @@ namespace Cnx.EarningsAndDeductions.UnitTests.Application
             var secondActionResult = await edController.ManualED(fakesingleManualEDCommand, Guid.NewGuid().ToString());
 
             //Assert
-            Assert.Equal((secondActionResult as BadRequestResult).StatusCode, (int)System.Net.HttpStatusCode.BadRequest);
+            Assert.Equal((secondActionResult as OkResult).StatusCode, (int)System.Net.HttpStatusCode.BadRequest);
         }
 
         [Fact]
