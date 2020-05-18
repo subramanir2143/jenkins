@@ -1,4 +1,4 @@
-def docker_images = ["my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}",
+def docker_images = ["my-registry:5000/cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}",
 "my-registry:5000/cnxnotification_unit_tests:B${BUILD_NUMBER}"]
 
 def get_stages(docker_image) {
