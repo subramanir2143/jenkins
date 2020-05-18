@@ -1,42 +1,88 @@
-def docker_images = ["python:2.7.14", "python:3.5.4", "python:3.6.2"]
+def docker_images = ["my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}"]
 
 def get_stages(docker_image) {
-    stages = {
-        docker.image(docker_image).inside {
-            stage("${docker_image}") {
+	stages = docker.image(docker_image).inside {
+		stage("${docker_image}") {
                 echo 'Running in ${docker_image}'
-            }
-            stage("Stage A") {
-                switch (docker_image) {
-                    case "python:2.7.14":
-                        sh 'exit 123'  // for python 2.7.14 we force an error for fun
-                        break
-                    default:
-                        sh 'sleep 10'  // for any other docker image, we sleep 10s
-                }
-                sh 'echo this is stage A'  // this is executed for all
-            }
-            stage("Stage B") {
-                sh 'sleep 5'
-                sh 'echo this is stage B'
-            }
-            stage("Stage C") {
-                sh 'sleep 8'
-                sh 'echo this is stage C'
-            }
-
         }
-    }
-    return stages
+
+		stage("Publish UT Report") {
+			containerID = sh (
+            script: "docker run -d ${docker_image}", 
+			returnStdout: true
+			).trim()
+			echo "Container ID is ==> ${containerID}"
+			sh "docker cp ${containerID}:/TestResults/test_results.xml test_results.xml"
+			sh "docker stop ${containerID}"
+			sh "docker rm ${containerID}"
+			step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'test_results.xml'])
+		}
+
+		stage("Integration Test") {
+			switch(docker_image) {
+				default:
+					sh 'sleep 10'
+					sh 'echo this is integration test stage'
+			}
+		}
+	}
+
+	return stages
 }
 
 node('docker') {
-    def stages = [:]
 
-    for (int i = 0; i < docker_images.size(); i++) {
-        def docker_image = docker_images[i]
-        stages[docker_image] = get_stages(docker_image)
-    }
+    stage ('Checkout') {
+		checkout scm
+	}       
 
-    parallel stages
+    stage ('Build & UnitTest') {
+		def cd = "${env.WORKSPACE}"
+		echo cd
+		sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
+		sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build"
+		//sh "docker build -t cnxearninganddeductions:test-B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile.Integration ."
+	}	
+    
+    //stage 'Publish UT Reports'
+        
+    //    containerID = sh (
+    //        script: "docker run -d cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}", 
+    //    returnStdout: true
+    //    ).trim()
+    //    echo "Container ID is ==> ${containerID}"
+    //    sh "docker cp ${containerID}:/TestResults/ TestResults"
+    //    sh "docker stop ${containerID}"
+    //    sh "docker rm ${containerID}"
+    //   step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'TestResults/test_results*.xml'])    
+      
+    //stage 'Integration Test'
+         // sh "docker-compose -f docker-compose.integration.yml up"
+    //     sh "docker-compose -f Cnx.payroll/docker-compose.integration.yml up --force-recreate --abort-on-container-exit"
+    //     sh "docker-compose -f Cnx.payroll/docker-compose.integration.yml down -v"
+
+    
+
+	// stage("Deploy to k8s")
+    //     sh "sed -i 's/BUILD_NUMBER/B${BUILD_NUMBER}/g' mydeploy.yaml"
+	// 	sh "kubectl apply -f mydeploy.yaml"
+	// 	sh "kubectl apply -f myservice.yaml"
+    
 }
+
+	def stages = [:]
+
+	for (int i = 0; i < docker_images.size(); i++) {
+		def docker_image = docker_images[i]
+		echo "Currently executing docker image"
+		echo docker_image
+		stages[docker_image] = get_stages(docker_image)
+	}
+	
+	parallel stages
+	
+	node('docker') {
+		stage("Push Image") {
+			sh "docker push my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}"
+		}
+	}
