@@ -2,30 +2,28 @@ def docker_images = ["my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}"
 
 def get_stages(docker_image) {
 	stages = {
-		docker.image(docker_image).inside {
-			stage("Print image name") {
-					echo 'Running in ${docker_image}'
-			}
-
-			stage("Publish UT Report") {
-				containerID = sh (
-					script: "docker run -d ${docker_image}", returnStdout: true
-				).trim()
-				echo "Container ID is ==> ${containerID}"
-				sh "docker cp ${containerID}:/TestResults/test_results.xml test_results.xml"
-				sh "docker stop ${containerID}"
-				sh "docker rm ${containerID}"
-				step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'test_results.xml'])
-			}
-
-			stage("Integration Test") {
-				switch(docker_image) {
-					default:
-						sh 'sleep 10'
-						sh 'echo this is integration test stage'
+				stage("Print image name") {
+						echo 'Running in ${docker_image}'
 				}
-			}
-		}
+
+				stage("Publish UT Report") {
+					containerID = sh (
+						script: "docker run -d ${docker_image}", returnStdout: true
+					).trim()
+					echo "Container ID is ==> ${containerID}"
+					sh "docker cp ${containerID}:/TestResults/test_results.xml test_results.xml"
+					sh "docker stop ${containerID}"
+					sh "docker rm ${containerID}"
+					step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'test_results.xml'])
+				}
+
+				stage("Integration Test") {
+					switch(docker_image) {
+						default:
+							sh 'sleep 10'
+							sh 'echo this is integration test stage'
+					}
+				}
 	}
 
 	return stages
