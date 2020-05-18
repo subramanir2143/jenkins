@@ -17,6 +17,7 @@ def get_stages(docker_image) {
 						sh "docker stop ${containerID}"
 						sh "docker rm ${containerID}"
 						step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'TestResults/test_results*.xml'])
+						sh "rm -r TestResults"
 					}
 
 					stage("Integration Test") {
