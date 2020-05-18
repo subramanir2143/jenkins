@@ -8,7 +8,7 @@ COPY ["src/Services/Notification/Cnx.Notification.API/Cnx.Notification.API.cspro
 RUN dotnet restore "src/Services/Notification/Cnx.Notification.API.UnitTests/Cnx.Notification.API.UnitTests.csproj"
 COPY . .
 
-RUN dotnet test --verbosity=normal --results-directory /TestResults/ --logger "trx;LogFileName=test_results.xml" "src/Services/Notification/Cnx.Notification.API.UnitTests/Cnx.Notification.API.csproj"
+RUN dotnet test --verbosity=normal --results-directory /TestResults/ --logger "trx;LogFileName=test_results.xml" "src/Services/Notification/Cnx.Notification.API.UnitTests/Cnx.Notification.API.UnitTests.csproj"
 
 RUN dotnet publish "src/Services/Notification/Cnx.Notification.API/Cnx.Notification.API.csproj" -o /publish/
 
