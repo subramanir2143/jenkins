@@ -1,3 +1,5 @@
+def docker_images = ["my-registry:5000/cnxearninganddeductions:B"]
+
 def get_stages(docker_image) {
 	stages = docker.image(docker_image).inside {
 		stage("${docker_image}") {
@@ -41,18 +43,29 @@ node('docker') {
 	sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
 	sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build"
     //sh "docker build -t cnxearninganddeductions:test-B${BUILD_NUMBER} -f Cnx.payroll/Dockerfile.Integration ."
+	
+	def stages = [:]
+
+    for (int i = 0; i < docker_images.size(); i++) {
+        def docker_image = docker_images[i] + ${BUILD_NUMBER}
+		echo "Currently executing docker image"
+		echo docker_image
+        stages[docker_image] = get_stages(docker_image)
+    }
+
+    parallel stages
     
-    stage 'Publish UT Reports'
+    //stage 'Publish UT Reports'
         
-        containerID = sh (
-            script: "docker run -d cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}", 
-        returnStdout: true
-        ).trim()
-        echo "Container ID is ==> ${containerID}"
-        sh "docker cp ${containerID}:/TestResults/ TestResults"
-        sh "docker stop ${containerID}"
-        sh "docker rm ${containerID}"
-        step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'TestResults/test_results*.xml'])    
+    //    containerID = sh (
+    //        script: "docker run -d cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}", 
+    //    returnStdout: true
+    //    ).trim()
+    //    echo "Container ID is ==> ${containerID}"
+    //    sh "docker cp ${containerID}:/TestResults/ TestResults"
+    //    sh "docker stop ${containerID}"
+    //    sh "docker rm ${containerID}"
+    //   step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'TestResults/test_results*.xml'])    
       
     //stage 'Integration Test'
          // sh "docker-compose -f docker-compose.integration.yml up"
