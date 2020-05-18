@@ -15,18 +15,20 @@ def get_stages(docker_image) {
 						echo "Container ID is ==> ${containerID}"
 						sh "docker cp ${containerID}:/TestResults/ TestResults"
 						sh "docker stop ${containerID}"
-						sh "docker rm ${containerID} || true"
+						sh "docker rm ${containerID}"
 						step([$class: 'MSTestPublisher', failOnError: false, testResultsFile: 'TestResults/test_results*.xml'])
+					}
+
+					stage("Integration Test") {
+						switch(docker_image) {
+							default:
+								sh 'sleep 10'
+								sh 'echo this is integration test stage'
+						}
 					}
 				}
 
-				stage("Integration Test") {
-					switch(docker_image) {
-						default:
-							sh 'sleep 10'
-							sh 'echo this is integration test stage'
-					}
-				}
+				
 	}
 
 	return stages
