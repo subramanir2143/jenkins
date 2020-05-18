@@ -1,4 +1,5 @@
-def docker_images = ["my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}"]
+def docker_images = ["my-registry:5000/cnxearninganddeductions:B${BUILD_NUMBER}",
+"my-registry:5000/cnxnotification_unit_tests:B${BUILD_NUMBER}"]
 
 def get_stages(docker_image) {
 	stages = {
@@ -8,7 +9,7 @@ def get_stages(docker_image) {
 
 				stage("Publish UT Report") {
 					containerID = sh (
-						script: "docker run -d cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}", returnStdout: true
+						script: "docker run -d ${docker_image}", returnStdout: true
 					).trim()
 					echo "Container ID is ==> ${containerID}"
 					sh "docker cp ${containerID}:/TestResults/ TestResults"

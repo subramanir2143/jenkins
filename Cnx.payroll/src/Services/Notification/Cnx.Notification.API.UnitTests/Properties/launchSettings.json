@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Cnx.Notification.API.UnitTests": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

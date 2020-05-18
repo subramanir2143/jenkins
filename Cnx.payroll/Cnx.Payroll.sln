@@ -27,9 +27,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cnx.EarningsAndDeductions.I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{403A6341-7F34-4668-A390-C57964C31302}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cnx.EarningsAndDeductions.FunctionalTests", "src\Services\EarningsAndDeductions\Cnx.EarningsAndDeductions.FunctionalTests\Cnx.EarningsAndDeductions.FunctionalTests.csproj", "{AEC558BB-D3E4-4D92-A336-23F3A1E41710}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cnx.EarningsAndDeductions.FunctionalTests", "src\Services\EarningsAndDeductions\Cnx.EarningsAndDeductions.FunctionalTests\Cnx.EarningsAndDeductions.FunctionalTests.csproj", "{AEC558BB-D3E4-4D92-A336-23F3A1E41710}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cnx.EarningsAndDeductions.UnitTests", "src\Services\EarningsAndDeductions\Cnx.EarningsAndDeductions.UnitTests\Cnx.EarningsAndDeductions.UnitTests.csproj", "{2CDD6F80-0BEC-4A73-91C5-8DC15447219C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cnx.EarningsAndDeductions.UnitTests", "src\Services\EarningsAndDeductions\Cnx.EarningsAndDeductions.UnitTests\Cnx.EarningsAndDeductions.UnitTests.csproj", "{2CDD6F80-0BEC-4A73-91C5-8DC15447219C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification", "Notification", "{A5AD3D76-E920-4D4B-8219-3B59D2759A25}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cnx.Notification.API", "src\Services\Notification\Cnx.Notification.API\Cnx.Notification.API.csproj", "{F093B7D6-62CA-4D02-A3FF-B43DC792C0FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A0372139-2DDB-4767-9B9E-414FA0AB78B6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cnx.Notification.API.UnitTests", "src\Services\Notification\Cnx.Notification.API.UnitTests\Cnx.Notification.API.UnitTests.csproj", "{CB317D94-E97D-4FE1-A428-9036DC675BC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +77,14 @@ Global
 		{2CDD6F80-0BEC-4A73-91C5-8DC15447219C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CDD6F80-0BEC-4A73-91C5-8DC15447219C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CDD6F80-0BEC-4A73-91C5-8DC15447219C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F093B7D6-62CA-4D02-A3FF-B43DC792C0FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F093B7D6-62CA-4D02-A3FF-B43DC792C0FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F093B7D6-62CA-4D02-A3FF-B43DC792C0FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F093B7D6-62CA-4D02-A3FF-B43DC792C0FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB317D94-E97D-4FE1-A428-9036DC675BC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB317D94-E97D-4FE1-A428-9036DC675BC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB317D94-E97D-4FE1-A428-9036DC675BC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB317D94-E97D-4FE1-A428-9036DC675BC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +102,10 @@ Global
 		{403A6341-7F34-4668-A390-C57964C31302} = {D82E9512-E085-47CC-AB57-CFCB55A4EA83}
 		{AEC558BB-D3E4-4D92-A336-23F3A1E41710} = {403A6341-7F34-4668-A390-C57964C31302}
 		{2CDD6F80-0BEC-4A73-91C5-8DC15447219C} = {403A6341-7F34-4668-A390-C57964C31302}
+		{A5AD3D76-E920-4D4B-8219-3B59D2759A25} = {FE928C3F-72EF-4D68-8439-33692133DF5B}
+		{F093B7D6-62CA-4D02-A3FF-B43DC792C0FB} = {A5AD3D76-E920-4D4B-8219-3B59D2759A25}
+		{A0372139-2DDB-4767-9B9E-414FA0AB78B6} = {A5AD3D76-E920-4D4B-8219-3B59D2759A25}
+		{CB317D94-E97D-4FE1-A428-9036DC675BC0} = {A0372139-2DDB-4767-9B9E-414FA0AB78B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {348B01D7-02AE-4192-910D-AC669E688EB9}
