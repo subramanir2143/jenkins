@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose-ci-build.yml" />
+    <None Include="docker-compose-integration-tests.yml" />
     <None Include="docker-compose-registry.yml" />
     <None Include="docker-compose-unit-tests.yml" />
     <None Include="docker-compose.ci.yml" />

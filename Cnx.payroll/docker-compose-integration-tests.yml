@@ -1,0 +1,67 @@
+version: '3.4'
+
+services:
+  rabbit:
+    image: rabbitmq:management
+    container_name: rabbit
+    ports:
+      - "5673:5672"
+      - "15678:15672"
+
+  nosql.data:
+    image: mongo
+    ports:
+      - "27016:27017"
+
+  mongo1:  
+    image: mongo
+    hostname: mongo1
+    container_name: mongo1.payroll
+    command: "--replSet rs0"
+    ports:
+      - "27017:27017"
+
+  mongo2:
+    image: mongo
+    hostname: mongo2
+    container_name: mongo2.payroll
+    command: "--replSet rs0"
+    ports:
+      - "27018:27017"
+   
+  mongo3:
+    image: mongo
+    hostname: mongo3
+    container_name: mongo3.payroll
+    command: "--replSet rs0"
+    ports:
+      - "27019:27017"
+
+  mysql.data:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: EarningsAndDeductions
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_USER: EarningsAndDeductions
+      MYSQL_PASSWORD: P@ssw0rd
+    ports:
+      - "3306:3306"
+
+  cnx.earningsanddeductions.integrationtest:
+    image: cnxearninganddeductions_integration_tests:B${BUILD_NUMBER}
+    build:
+      context: .
+      dockerfile: src/Services/EarningsAndDeductions/Cnx.EarningsAndDeductions.FunctionalTests/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - EventBusConnection=${ED_RABBITMQ_HOST:-rabbit}
+      - EventBusUserName=${ED_RABBITMQ_UN:-guest}
+      - EventBusPassword=${ED_RABBITMQ_PWD:-guest}
+      - MongoConnectionString=${ED_MONGO_CS:-mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0}
+      - MongoDatabase=${ED_MONGO_DB:-EDEventStore}
+      - FilePath=${ED_FilePath:- /app}
+      - MySQLConnectionString=${PAYROLL_READ_CS:-Server=mysql.data;database=EarningsAndDeductions;user=root;password=P@ssw0rd}
+    depends_on:
+       - nosql.data
+       - mysql.data

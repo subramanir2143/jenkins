@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
 
-  cnx.earningsanddeductions.unittest.api:
+  cnx.earningsanddeductions.unittest:
     image: cnxearninganddeductions_unit_tests:B${BUILD_NUMBER}
     build:
       context: .
