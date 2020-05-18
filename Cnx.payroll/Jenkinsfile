@@ -32,6 +32,15 @@ def get_stages(docker_image) {
 
 node('docker') {
 
+		def stages = [:]
+
+		for (int i = 0; i < docker_images.size(); i++) {
+			def docker_image = docker_images[i] + ${BUILD_NUMBER}
+			echo "Currently executing docker image"
+			echo docker_image
+			stages[docker_image] = get_stages(docker_image)
+		}
+
     stage ('Checkout') {
 		checkout scm
 	}       
@@ -46,18 +55,8 @@ node('docker') {
     
 	
 	stage ('Tests'){
-		def stages = [:]
-
-		for (int i = 0; i < docker_images.size(); i++) {
-			def docker_image = docker_images[i] + ${BUILD_NUMBER}
-			echo "Currently executing docker image"
-			echo docker_image
-			stages[docker_image] = get_stages(docker_image)
-		}
-
 		parallel stages
 	}
-	
 	
     
     //stage 'Publish UT Reports'
