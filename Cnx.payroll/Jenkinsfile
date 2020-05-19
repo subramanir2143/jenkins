@@ -63,11 +63,4 @@ node('docker') {
 		sh "docker tag cnx.notification.api:B${BUILD_NUMBER} my-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
 		sh "docker push my-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
 	}
-
-	stage("Cleanup") {
-		sh "docker stop (docker ps -q)"
-		sh "docker rm (docker ps -a -q)"
-		sh "docker rmi (docker images -q -f dangling=true)"
-
-	}
 }
