@@ -39,8 +39,8 @@ node('docker') {
 	}       
 
     stage ('Build & UnitTest') {
-		sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build"
-		sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build"
+		sh "docker-compose -f Cnx.payroll/docker-compose-ci-build.yml build --no-cache"
+		sh "docker-compose -f Cnx.payroll/docker-compose-unit-tests.yml build --no-cache"
 	}
     
 }
@@ -62,5 +62,12 @@ node('docker') {
 		sh "docker push my-registry:5000/cnx.earninganddeductions.api.${formattedDate}.${BUILD_NUMBER}"
 		sh "docker tag cnx.notification.api:B${BUILD_NUMBER} my-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
 		sh "docker push my-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
+	}
+
+	stage("Cleanup") {
+		sh "docker stop $(docker ps -q)"
+		sh "docker rm $(docker ps -a -q)"
+		sh "docker rmi $(docker images -q -f dangling=true)"
+
 	}
 }
