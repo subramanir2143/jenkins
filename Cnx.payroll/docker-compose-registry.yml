@@ -1,11 +1,11 @@
 version: '3.4'
 
 services:
-    my-registry:
+    local-registry:
         ports:
             - '5000:5000'
         restart: always
-        container_name: my-registry
+        container_name: local-registry
         volumes:
             - registry:/var/lib/registry3
         image: 'registry:latest'

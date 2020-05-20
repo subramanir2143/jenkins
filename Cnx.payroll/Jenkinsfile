@@ -3,7 +3,7 @@ def docker_images = ["cnx.earninganddeductions.unittest:B${BUILD_NUMBER}", "cnx.
 def get_stages(docker_image) {
 	stages = {
 				stage("Print image name") {
-						echo "Running in ${docker_image}"
+						echo "Running in $docker_image"
 				}
 
 				node('docker'){
@@ -58,9 +58,9 @@ node('docker') {
 node('docker') {
 	stage("Push Image") {
 		def formattedDate = new Date().format("ddMMyyyy")
-		sh "docker tag cnx.earninganddeductions.api:B${BUILD_NUMBER} my-registry:5000/cnx.earninganddeductions.api.${formattedDate}.${BUILD_NUMBER}"
-		sh "docker push my-registry:5000/cnx.earninganddeductions.api.${formattedDate}.${BUILD_NUMBER}"
-		sh "docker tag cnx.notification.api:B${BUILD_NUMBER} my-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
-		sh "docker push my-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
+		sh "docker tag cnx.earninganddeductions.api:B${BUILD_NUMBER} local-registry:5000/cnx.earninganddeductions.api.${formattedDate}.${BUILD_NUMBER}"
+		sh "docker push local-registry:5000/cnx.earninganddeductions.api.${formattedDate}.${BUILD_NUMBER}"
+		sh "docker tag cnx.notification.api:B${BUILD_NUMBER} local-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
+		sh "docker push local-registry:5000/cnx.notification.api.${formattedDate}.${BUILD_NUMBER}"
 	}
 }

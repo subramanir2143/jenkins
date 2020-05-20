@@ -1,0 +1,38 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: cnx.earningsanddeductions.api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: earningsanddeduction
+    spec:
+        containers:
+        - image: "my-registry:5000/cnx.earninganddeductions.api.19052020.2"
+          imagePullPolicy: Always
+          name: cnx.earningsanddeductions.api
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:80
+        - name: EventBusConnection
+          value: rabbit
+        - name: EventBusUserName
+          value: guest
+        - name: EventBusPassword
+          value: guest
+        - name: MongoConnectionString
+          value: mongodb://mongo1:27017,mongo2:27018,mongo3:27019/?replicaSet=rs0
+        - name: MongoDatabase
+          value: EDEventStore
+        - name: MySQLConnectionString
+          value: Server=mysql.data;database=EarningsAndDeductions;user=root;password=P@ssw0rd
+        - name: FilePath
+          value: /app
+        - name: IdentityUrl
+          value: http://cnx.identity.api
+        ports:
+        - containerPort: 80
